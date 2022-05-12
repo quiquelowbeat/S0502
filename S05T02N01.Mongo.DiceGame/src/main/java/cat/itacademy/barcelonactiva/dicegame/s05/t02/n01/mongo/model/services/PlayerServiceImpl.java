@@ -55,10 +55,9 @@ public class PlayerServiceImpl implements PlayerService{
 
         player.setWinningPercentage(player.calculateWinningPercentage());
         if(player.getGames() != null){
-            //player.getGames().add(gameRepository.save(game));
             player.getGames().add(game);
         }
-        playerRepository.save(player);
+        playerRepository.save(player); // Update de los valores actualizados de partidas ganadas y porcetanje de éxito.
         return mapper.toGameDto(game);
     }
 

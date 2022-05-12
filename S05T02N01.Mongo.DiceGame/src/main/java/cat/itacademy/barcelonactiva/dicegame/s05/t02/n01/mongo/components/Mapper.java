@@ -31,7 +31,6 @@ public class Mapper {
     // Método para transformar Dto a Entity
     public Game toGameEntity(GameDto gameDto) {
         Game game = new Game();
-        // game.setGameId(game.getGameId());
         game.setDice1(game.getDice1());
         game.setDice2(game.getDice2());
         game.setResult(game.getResult());
@@ -41,7 +40,6 @@ public class Mapper {
     // Método para transformar Entity a Dto
     public GameDto toGameDto(Game game){
         GameDto gameDto = new GameDto();
-        // gameDto.setGameId(game.getGameId());
         gameDto.setDice1(game.getDice1());
         gameDto.setDice2(game.getDice2());
         gameDto.setResult(game.getResult());
