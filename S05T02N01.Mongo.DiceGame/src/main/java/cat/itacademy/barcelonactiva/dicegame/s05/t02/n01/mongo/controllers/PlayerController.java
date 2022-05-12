@@ -28,11 +28,30 @@ public class PlayerController {
     }
 
     @PutMapping("/players")
-    public ResponseEntity<PlayerDto> updatePlayer(@RequestBody PlayerDto playerDto){
+    public ResponseEntity<PlayerDto> updatePlayerName(@RequestBody PlayerDto playerDto){
         try{
             return new ResponseEntity<>(playerService.updatePlayerName(playerDto), HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/players/{id}/games")
+    public ResponseEntity<GameDto> newGame(@PathVariable String id){
+        try{
+            return new ResponseEntity<>(playerService.newGame(id), HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/players/{id}/games")
+    public ResponseEntity<PlayerDto> deleteAllGamesByPlayerId(@PathVariable String id){
+        try{
+            playerService.deleteAllGamesByPlayerId(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -46,8 +65,18 @@ public class PlayerController {
         }
     }
 
+
+    @GetMapping("/players/{id}/games")
+    public ResponseEntity<List<GameDto>> getGamesByPlayerId(@PathVariable String id){
+        try{
+            return new ResponseEntity<>(playerService.getGamesByPlayerId(id), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     @GetMapping("/players/ranking")
-    public ResponseEntity<Map<String, Double>> getRanking(){
+    public ResponseEntity<Map<String, Double>> getRankingOfAllPlayers(){
         try{
             return new ResponseEntity<>(playerService.getRankingOfAllPlayers(), HttpStatus.OK);
         } catch (Exception e){
@@ -56,7 +85,7 @@ public class PlayerController {
     }
 
     @GetMapping("/players/ranking/loser")
-    public ResponseEntity<PlayerDto> getLooser(){
+    public ResponseEntity<PlayerDto> getLoser(){
         try{
             return new ResponseEntity<>(playerService.getLoser(), HttpStatus.OK);
         } catch (Exception e){
@@ -71,15 +100,5 @@ public class PlayerController {
         } catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
-    }
-
-    @PostMapping("/players/{id}/games")
-    public ResponseEntity<GameDto> newGame(@PathVariable String id){
-        try{
-            return new ResponseEntity<>(playerService.newGame(id), HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
     }
 }

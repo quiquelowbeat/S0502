@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface PlayerRepository extends MongoRepository<Player, String> {
     Optional<Player> findByPlayerId(String id);
-    // List<Game> findByPlayerID(String id);
 }

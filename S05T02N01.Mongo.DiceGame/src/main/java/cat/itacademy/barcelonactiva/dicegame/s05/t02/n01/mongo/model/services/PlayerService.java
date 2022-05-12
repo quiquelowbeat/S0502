@@ -11,13 +11,13 @@ public interface PlayerService {
 
     PlayerDto createPlayer(String name);
     PlayerDto updatePlayerName(PlayerDto playerDto);
+    GameDto newGame(String playerId);
+    void deleteAllGamesByPlayerId(String playerId);
     List<PlayerDto> getAllPlayers();
+    List<GameDto> getGamesByPlayerId(String playerId);
     Map<String, Double> getRankingOfAllPlayers();
     PlayerDto getLoser();
     PlayerDto getWinner();
-    GameDto newGame(String playerId);
     Player findPlayer(String playerId);
-    // List<GameDto> getGamesByPlayerId(String playerId);
-    // void deleteAllGamesByPlayerId(String playerId);
 
 }

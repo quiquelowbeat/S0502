@@ -69,6 +69,7 @@ public class GameServiceImpl implements GameService{
     }
 
     // Método findPlayer - busca en playerRepository Player por ID y devuelve el player encontrado.
+    @Override
     public Player findPlayer(Long playerId){
         Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
         Player player = null;

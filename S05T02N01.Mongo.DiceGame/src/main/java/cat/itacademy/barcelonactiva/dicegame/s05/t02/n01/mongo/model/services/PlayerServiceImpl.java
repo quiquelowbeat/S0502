@@ -42,11 +42,56 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
+    public GameDto newGame(String playerId) {
+        Player player = findPlayer(playerId);
+        Game game = Game.getInstance(/*player*/);
+        if(game.getResult().equals("WIN")){
+            player.setTotalWins(player.getTotalWins() + 1);
+        }
+        /*
+        Método player.calculateWinningPercentage() creado en el domain Player para calcular el porcentaje
+        de partidas ganadas.
+        */
+
+        player.setWinningPercentage(player.calculateWinningPercentage());
+        if(player.getGames() != null){
+            //player.getGames().add(gameRepository.save(game));
+            player.getGames().add(game);
+        }
+        playerRepository.save(player);
+        return mapper.toGameDto(game);
+    }
+
+    @Override
+    public void deleteAllGamesByPlayerId(String playerId){
+        Player player = findPlayer(playerId);
+        // Llamamos a los juegos del jugador en concreto y procedemos a borrarlos.
+        player.getGames().clear();
+        // Actualizamos el porcentaje de acierto y las partidas ganadas a 0 y actualizamos al entidad Player.
+        player.setWinningPercentage(0.0d);
+        player.setTotalWins(0);
+        playerRepository.save(player);
+    }
+
+    @Override
     public List<PlayerDto> getAllPlayers() {
         // Fem una llista de Dtos amb totes les entitats y la retornem.
         return playerRepository.findAll().stream()
                 .map(player -> mapper.toPlayerDto(player))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameDto> getGamesByPlayerId(String playerId){
+        Player player = findPlayer(playerId);
+        List<GameDto> gameDtoList = player.getGames().stream()
+                .map(game -> mapper.toGameDto(game))
+                .collect(Collectors.toList());
+        if(gameDtoList.isEmpty()){
+            throw new NullPointerException("Game list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
+        } else {
+            return gameDtoList;
+        }
     }
 
     @Override
@@ -93,27 +138,6 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public GameDto newGame(String playerId) {
-        Player player = findPlayer(playerId);
-        Game game = Game.getInstance(/*player*/);
-        if(game.getResult().equals("WIN")){
-            player.setTotalWins(player.getTotalWins() + 1);
-        }
-        /*
-        Método player.calculateWinningPercentage() creado en el domain Player para calcular el porcentaje
-        de partidas ganadas.
-        */
-
-        player.setWinningPercentage(player.calculateWinningPercentage());
-        if(player.getGames() != null){
-            //player.getGames().add(gameRepository.save(game));
-            player.getGames().add(game);
-        }
-        playerRepository.save(player);
-        return mapper.toGameDto(game);
-    }
-
-    @Override
     public Player findPlayer(String playerId){
         Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
         Player player = null;
@@ -124,32 +148,4 @@ public class PlayerServiceImpl implements PlayerService{
         }
         return player;
     }
-
-    /*@Override
-    public List<GameDto> getGamesByPlayerId(String playerId){
-        Player player = findPlayer(playerId);
-        List<GameDto> gameDtoList = playerRepository.findByPlayerID(playerId).stream()
-                .map(game -> mapper.toGameDto(game))
-                .collect(Collectors.toList());
-        if(gameDtoList.isEmpty()){
-            throw new NullPointerException("Empty game list."); // Lanzamos excepción en caso de que la lista esté vacía.
-        } else {
-            return gameDtoList;
-        }
-    }
-
-    @Override
-    public void deleteAllGamesByPlayerId(String playerId){
-        Player player = findPlayer(playerId);
-        // Hacemos una lista con los juegos del jugador en concreto y procedemos a borrarlos.
-        List<Game> gameList = playerRepository.findByPlayerID(playerId);
-        for(Game game : gameList){
-            gameRepository.delete(game);
-        }
-        // Actualizamos el porcentaje de acierto y las partidas ganadas a 0 y actualizamos al entidad Player.
-        player.setWinningPercentage(0.0d);
-        player.setTotalWins(0);
-        playerRepository.save(player);
-    }*/
-
 }
