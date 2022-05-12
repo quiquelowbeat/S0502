@@ -44,7 +44,7 @@ public class PlayerServiceImpl implements PlayerService{
     @Override
     public GameDto newGame(String playerId) {
         Player player = findPlayer(playerId);
-        Game game = Game.getInstance(/*player*/);
+        Game game = Game.getInstance();
         if(game.getResult().equals("WIN")){
             player.setTotalWins(player.getTotalWins() + 1);
         }
@@ -52,11 +52,10 @@ public class PlayerServiceImpl implements PlayerService{
         Método player.calculateWinningPercentage() creado en el domain Player para calcular el porcentaje
         de partidas ganadas.
         */
-
-        player.setWinningPercentage(player.calculateWinningPercentage());
         if(player.getGames() != null){
             player.getGames().add(game);
         }
+        player.setWinningPercentage(player.calculateWinningPercentage());
         playerRepository.save(player); // Update de los valores actualizados de partidas ganadas y porcetanje de éxito.
         return mapper.toGameDto(game);
     }
