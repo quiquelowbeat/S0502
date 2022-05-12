@@ -1,5 +1,6 @@
 package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.sql.model.domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
