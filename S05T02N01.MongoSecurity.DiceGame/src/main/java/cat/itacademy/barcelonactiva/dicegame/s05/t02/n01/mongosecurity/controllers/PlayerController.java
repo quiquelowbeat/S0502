@@ -1,8 +1,8 @@
-package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongo.controllers;
+package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.controllers;
 
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongo.model.dto.GameDto;
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongo.model.dto.PlayerDto;
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongo.model.services.PlayerService;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.GameDto;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping(path = "/private", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "*")
 public class PlayerController {
 
     @Autowired
