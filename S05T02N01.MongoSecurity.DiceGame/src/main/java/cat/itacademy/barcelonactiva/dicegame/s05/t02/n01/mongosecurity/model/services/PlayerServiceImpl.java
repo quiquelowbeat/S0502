@@ -6,6 +6,7 @@ import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dom
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.GameDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.repositories.PlayerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +14,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService{
 
     @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
 
     @Autowired
-    private Mapper mapper;
+    private final Mapper mapper;
 
     @Override
     public PlayerDto createPlayer(String name) {
-        // Objects.requireNonNullElse(name, "ANONIMOUS") - crea el objeto con name o "ANONIMOUS" si name es null.
-        Player player = Player.getInstance(Objects.requireNonNullElse(name, "ANONIMOUS"));
+        Player player = Player.getInstance(name);
         return mapper.toPlayerDto(playerRepository.save(player));
     }
 

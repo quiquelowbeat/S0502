@@ -6,10 +6,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -46,6 +43,7 @@ public class Player {
 
     // Static Factory Method - devuelve una instancia del objeto Player.
     public static Player getInstance(String name){
-        return new Player(name);
+        // Objects.requireNonNullElse(name, "ANONIMOUS") - crea el objeto con name o "ANONIMOUS" si name es null.
+        return new Player(Objects.requireNonNullElse(name, "ANONIMOUS"));
     }
 }
