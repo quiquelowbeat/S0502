@@ -1,11 +1,10 @@
 package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services;
 
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.components.Mapper;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.domains.Game;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.domains.Player;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.repositories.PlayerRepository;
-import org.assertj.core.api.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,15 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Calendar;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceImplTest {
@@ -36,51 +32,68 @@ class PlayerServiceImplTest {
     @Mock
     private Mapper mapper;
 
-    // Inyectamos los mocks en la clase playerServiceImpl
+    // Inyectamos los mocks en la clase playerServiceImpl (mockito no me permite inyectar la interface playerService
+    // como hace @Autowired)
     @InjectMocks
-    private PlayerServiceImpl playerServiceImpl;
+    private PlayerServiceImpl playerService;
 
     private Player player;
+    private Player player2;
     private PlayerDto playerDto;
+    private PlayerDto playerDto2;
 
     @BeforeEach
     void setup(){
+        // player
         player = Player.getInstance("FooFighter");
         player.setPlayerId("1L");
         player.setDate(Calendar.getInstance().getTime());
-        player.setTotalWins(0);
-        player.setWinningPercentage(0.0);
+        player.setTotalWins(4);
+        player.setWinningPercentage(35.00);
+        player.getGames().add(Game.getInstance());
+        player.getGames().add(Game.getInstance());
+        player.getGames().add(Game.getInstance());
+
+        // player2
+        player2 = Player.getInstance("Quique");
+        player2.setPlayerId("2L");
+        player2.setWinningPercentage(55.00);
+
+        // playerDto
         playerDto = new PlayerDto();
         playerDto.setPlayerId(player.getPlayerId());
         playerDto.setName(player.getName());
         playerDto.setDate(player.getDate());
         playerDto.setWinningPercentage(player.getWinningPercentage());
+
+        // playerDto2
+        playerDto2 = new PlayerDto();
+        playerDto2.setPlayerId(player2.getPlayerId());
+        playerDto2.setName(player2.getName());
+        playerDto2.setDate(player2.getDate());
+        playerDto2.setWinningPercentage(player2.getWinningPercentage());
     }
 
     @DisplayName("JUnit test for createPlayer method")
     @Test
-    void givenPlayerConvertedToDtoObject_whenCreatePlayer_thenReturnCreatedPlayerDto() {
+    void createPlayer() {
         // given - precondition or setup
         given(mapper.toPlayerDto(playerRepository.save(player))).willReturn(playerDto);
-
         // when -  action or the behaviour that we are going test
-        PlayerDto createdPlayer = playerServiceImpl.createPlayer(player.getName());
-
+        PlayerDto createdPlayer = playerService.createPlayer(player.getName());
         // then - verify the output
         assertThat(createdPlayer).isNotNull();
     }
 
     @DisplayName("JUnit test for updatePlayerName method")
     @Test
-    void givenPlayerObject_whenUpdatePlayer_thenReturnUpdatedPlayer() {
+    void updatePlayerName() {
         // given
         given(playerRepository.findByPlayerId("1L")).willReturn(Optional.of(player));
-        player.setName("NotFoo");
-        playerDto.setName(player.getName());
+        playerDto.setName("NotFoo");
         given(mapper.toPlayerDto(playerRepository.save(player))).willReturn(playerDto);
-
         // when
-        PlayerDto updatedPlayer = playerServiceImpl.updatePlayerName(playerDto);
+        PlayerDto updatedPlayer = playerService.updatePlayerName(playerDto);
 
         // then
         assertEquals("NotFoo", updatedPlayer.getName());
@@ -96,49 +109,87 @@ class PlayerServiceImplTest {
         // then
         verify(playerRepository, never()).save(any(Player.class));
     }
-
     */
 
-    @DisplayName("JUnit test for newGame method")
-    @Test
-    void newGame() {
-    }
-
-    /*
     @DisplayName("JUnit test for deleteAllGamesByPlayerId method")
     @Test
     void deleteAllGamesByPlayerId() {
+        // given
+        given(playerRepository.findByPlayerId("1L")).willReturn(Optional.of(player));
+        // when
+        playerService.deleteAllGamesByPlayerId("1L");
+        // then
+        assertThat(player.getGames().size()).isEqualTo(0);
     }
 
     @DisplayName("JUnit test for getAllPlayers method")
     @Test
     void getAllPlayers() {
-    }
-
-    @DisplayName("JUnit test for getGamesByPlayerId method")
-    @Test
-    void getGamesByPlayerId() {
+        // given
+        given(playerRepository.findAll()).willReturn(List.of(player, player2));
+        // when
+        List<PlayerDto> playerList = playerService.getAllPlayers();
+        // then
+        assertThat(playerList.size()).isEqualTo(2);
     }
 
     @DisplayName("JUnit test for getRankingOfAllPlayers method")
     @Test
     void getRankingOfAllPlayers() {
+        // given
+        given(playerRepository.findAll()).willReturn(List.of(player, player2));
+        // when
+        Map<String, Double> playerMap = playerService.getRankingOfAllPlayers();
+        // then
+        assertThat(playerMap.size()).isEqualTo(2);
     }
 
     @DisplayName("JUnit test for getLoser method")
     @Test
     void getLoser() {
+        // given
+        List<Player> playerList = List.of(player, player2);
+        given(playerRepository.findAll()).willReturn(playerList);
+        given(mapper.toPlayerDto(player)).willReturn(playerDto);
+        // when
+        PlayerDto playerLoser = playerService.getLoser();
+        // then
+        assertThat(playerLoser.getPlayerId()).isEqualTo("1L");
     }
 
     @DisplayName("JUnit test for getWinner method")
     @Test
     void getWinner() {
+        // given
+        List<Player> playerList = List.of(player, player2);
+        given(playerRepository.findAll()).willReturn(playerList);
+        given(mapper.toPlayerDto(player2)).willReturn(playerDto2);
+        // when
+        PlayerDto playerWinnerr = playerService.getWinner();
+        // then
+        assertThat(playerWinnerr.getPlayerId()).isEqualTo("2L");
     }
 
     @DisplayName("JUnit test for findPlayer method")
     @Test
     void findPlayer() {
+        // given
+        given(playerRepository.findByPlayerId("1L")).willReturn(Optional.of(player));
+        // when
+        Player playerFound = playerService.findPlayer("1L");
+        // then
+        assertEquals(player, playerFound);
     }
-    */
 
+
+   /* @DisplayName("JUnit test for findPlayer_NotFound method")
+    @Test
+    void findPlayer_NotFound() {
+        // given
+        given(playerRepository.findByPlayerId("1L")).willReturn(Optional.ofNullable(player));
+        // when
+        Player playerFound = playerService.findPlayer("2L");
+        // then
+        assertNotEquals(player.getPlayerId(), playerFound.getPlayerId());
+    }*/
 }

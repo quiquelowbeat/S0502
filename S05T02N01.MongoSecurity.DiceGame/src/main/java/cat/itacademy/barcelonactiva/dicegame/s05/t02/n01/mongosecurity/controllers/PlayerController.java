@@ -2,6 +2,7 @@ package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.controll
 
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.GameDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services.GameService;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,9 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
+    @Autowired
+    private GameService gameService;
+
     @PostMapping({"/players", "/players/{name}"})
     public ResponseEntity<PlayerDto> createPlayer(@PathVariable(required = false) String name){
         try{
@@ -34,15 +38,6 @@ public class PlayerController {
     public ResponseEntity<PlayerDto> updatePlayerName(@RequestBody PlayerDto playerDto){
         try{
             return new ResponseEntity<>(playerService.updatePlayerName(playerDto), HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/players/{id}/games")
-    public ResponseEntity<GameDto> newGame(@PathVariable String id){
-        try{
-            return new ResponseEntity<>(playerService.newGame(id), HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -65,16 +60,6 @@ public class PlayerController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(playerDtoList, HttpStatus.OK);
-        }
-    }
-
-
-    @GetMapping("/players/{id}/games")
-    public ResponseEntity<List<GameDto>> getGamesByPlayerId(@PathVariable String id){
-        try{
-            return new ResponseEntity<>(playerService.getGamesByPlayerId(id), HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
 

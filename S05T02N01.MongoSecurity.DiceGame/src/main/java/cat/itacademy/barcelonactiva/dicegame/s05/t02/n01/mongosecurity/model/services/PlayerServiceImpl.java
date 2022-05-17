@@ -1,9 +1,7 @@
 package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services;
 
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.components.Mapper;
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.domains.Game;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.domains.Player;
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.GameDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
 import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.repositories.PlayerRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,34 +29,10 @@ public class PlayerServiceImpl implements PlayerService{
 
     @Override
     public PlayerDto updatePlayerName(PlayerDto playerDto) {
-        Optional<Player> playerOptional = playerRepository.findByPlayerId(playerDto.getPlayerId());
         Player playerUpdated = null;
-        if(playerOptional.isPresent()){
-            playerUpdated = playerOptional.get();
-            playerUpdated.setName(playerDto.getName());
-        } else {
-            System.err.println("Player not found.");
-        }
+        playerUpdated = findPlayer(playerDto.getPlayerId());
+        playerUpdated.setName(playerDto.getName());
         return mapper.toPlayerDto(playerRepository.save(playerUpdated));
-    }
-
-    @Override
-    public GameDto newGame(String playerId) {
-        Player player = findPlayer(playerId);
-        Game game = Game.getInstance();
-        if(game.getResult().equals("WIN")){
-            player.setTotalWins(player.getTotalWins() + 1);
-        }
-        /*
-        Método player.calculateWinningPercentage() creado en el domain Player para calcular el porcentaje
-        de partidas ganadas.
-        */
-        if(player.getGames() != null){
-            player.getGames().add(game);
-        }
-        player.setWinningPercentage(player.calculateWinningPercentage());
-        playerRepository.save(player); // Update de los valores actualizados de partidas ganadas y porcetanje de éxito.
-        return mapper.toGameDto(game);
     }
 
     @Override
@@ -81,19 +55,6 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public List<GameDto> getGamesByPlayerId(String playerId){
-        Player player = findPlayer(playerId);
-        List<GameDto> gameDtoList = player.getGames().stream()
-                .map(game -> mapper.toGameDto(game))
-                .collect(Collectors.toList());
-        if(gameDtoList.isEmpty()){
-            throw new NullPointerException("Game list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
-        } else {
-            return gameDtoList;
-        }
-    }
-
-    @Override
     public Map<String, Double> getRankingOfAllPlayers() {
         Map<String, Double> rankingMap = new LinkedHashMap<>();
         // Usamos stream en la lista de jugadores para ordenar por porcentaje de acierto antes de pasarla al LinkedHashMap.
@@ -103,11 +64,8 @@ public class PlayerServiceImpl implements PlayerService{
                 .collect(Collectors.toList());
         // Con el forEach pasamos de la List al Map
         playerList.forEach(p -> rankingMap.put("playerId: " + p.getPlayerId(), p.getWinningPercentage()));
-        if(playerList.isEmpty()){
-            throw new NullPointerException("Player's list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
-        } else {
-            return rankingMap;
-        }
+        if(!playerList.isEmpty()) return rankingMap;
+        throw new NullPointerException("Player's list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
     }
 
     @Override
@@ -136,15 +94,16 @@ public class PlayerServiceImpl implements PlayerService{
          return mapper.toPlayerDto(player);
     }
 
+
     @Override
     public Player findPlayer(String playerId){
         Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
         Player player = null;
-        if(playerOptional.isPresent()){
-            player = playerOptional.get();
-        } else {
+        if(playerOptional.isEmpty()){
             System.err.println("Player not found.");
+            return null;
         }
+        player = playerOptional.get();
         return player;
     }
 }
