@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // Importante para que Mockito funcione correctamente.
 class PlayerServiceImplTest {
 
     // Creamos un objecto "mocked" playerRepository. Es un objeto "fake" que hará la función de playerRepositoty y+
@@ -77,7 +77,7 @@ class PlayerServiceImplTest {
     @DisplayName("JUnit test for createPlayer method")
     @Test
     void createPlayer() {
-        // given - precondition or setup
+        // given - precondition or setup - en esta parte del test indicamos el comportamiento del @Mock.
         given(mapper.toPlayerDto(playerRepository.save(player))).willReturn(playerDto);
         // when -  action or the behaviour that we are going test
         PlayerDto createdPlayer = playerService.createPlayer(player.getName());
@@ -98,18 +98,6 @@ class PlayerServiceImplTest {
         // then
         assertEquals("NotFoo", updatedPlayer.getName());
     }
-
-    /*
-    @DisplayName("JUnit test for updatePlayerName method - using fake ID")
-    @Test
-    void givenPlayerObject_whenUpdatePlayer_thenThrowsException() {
-        // given
-        given(playerRepository.findByPlayerId("4L")).willReturn(Optional.empty());
-        // when
-        // then
-        verify(playerRepository, never()).save(any(Player.class));
-    }
-    */
 
     @DisplayName("JUnit test for deleteAllGamesByPlayerId method")
     @Test
@@ -181,15 +169,13 @@ class PlayerServiceImplTest {
         assertEquals(player, playerFound);
     }
 
-
-   /* @DisplayName("JUnit test for findPlayer_NotFound method")
+    @DisplayName("JUnit test for findPlayer_NotFound method")
     @Test
     void findPlayer_NotFound() {
         // given
-        given(playerRepository.findByPlayerId("1L")).willReturn(Optional.ofNullable(player));
         // when
-        Player playerFound = playerService.findPlayer("2L");
+        Player playerFound = playerService.findPlayer("3L");
         // then
-        assertNotEquals(player.getPlayerId(), playerFound.getPlayerId());
-    }*/
+        assertThat(playerFound).isNull();
+    }
 }

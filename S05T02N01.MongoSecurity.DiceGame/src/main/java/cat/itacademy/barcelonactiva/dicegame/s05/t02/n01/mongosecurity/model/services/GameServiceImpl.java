@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,14 +27,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameDto newGame(String playerId) {
-        Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
-        Player player = null;
-        // Guard clause
-        if(playerOptional.isEmpty()) {
-            System.err.println("Player not found.");
-            return null;
-        }
-        player = playerOptional.get();
+        Player player = playerService.findPlayer(playerId);
         Game game = Game.getInstance();
         if(game.getResult().equals("WIN")) player.setTotalWins(player.getTotalWins() + 1);
         /*
@@ -50,18 +42,11 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<GameDto> getGamesByPlayerId(String playerId){
-        Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
-        Player player = null;
-        if(playerOptional.isEmpty()) {
-            System.err.println("Player not found.");
-            return null;
-        }
-        player = playerOptional.get();
+        Player player = playerService.findPlayer(playerId);
         List<GameDto> gameDtoList = player.getGames().stream()
-                .map(mapper::toGameDto)
+                .map(mapper::toGameDto) // game -> mapper.toGameDto(game)
                 .collect(Collectors.toList());
-        // Guard Clause
-        if(!gameDtoList.isEmpty()) return gameDtoList;
-        throw new NullPointerException("Game list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
+        if(gameDtoList.isEmpty()) throw new NullPointerException("Game list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
+        return gameDtoList;
     }
 }

@@ -50,7 +50,7 @@ public class PlayerServiceImpl implements PlayerService{
     public List<PlayerDto> getAllPlayers() {
         // Fem una llista de Dtos amb totes les entitats y la retornem.
         return playerRepository.findAll().stream()
-                .map(player -> mapper.toPlayerDto(player))
+                .map(mapper::toPlayerDto) // player -> mapper.toPlayerDto(player
                 .collect(Collectors.toList());
     }
 
@@ -62,10 +62,10 @@ public class PlayerServiceImpl implements PlayerService{
         List<Player> playerList = playerRepository.findAll().stream()
                 .sorted(Comparator.comparing(Player::getWinningPercentage).reversed())
                 .collect(Collectors.toList());
+        if(playerList.isEmpty()) throw new NullPointerException("Player's list is empty.");
         // Con el forEach pasamos de la List al Map
-        playerList.forEach(p -> rankingMap.put("playerId: " + p.getPlayerId(), p.getWinningPercentage()));
-        if(!playerList.isEmpty()) return rankingMap;
-        throw new NullPointerException("Player's list is empty."); // Lanzamos excepción en caso de que la lista esté vacía.
+        playerList.forEach(p -> rankingMap.put("playerId: " + p.getPlayerId(), p.getWinningPercentage()));// Lanzamos excepción en caso de que la lista esté vacía.
+        return rankingMap;
     }
 
     @Override
@@ -94,8 +94,8 @@ public class PlayerServiceImpl implements PlayerService{
          return mapper.toPlayerDto(player);
     }
 
-
     @Override
+    // Abstraemos la búsqueda de player usando Optional al método findPlayer()
     public Player findPlayer(String playerId){
         Optional<Player> playerOptional = playerRepository.findByPlayerId(playerId);
         Player player = null;
