@@ -22,9 +22,6 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
-    @Autowired
-    private GameService gameService;
-
     @PostMapping({"/players", "/players/{name}"})
     public ResponseEntity<PlayerDto> createPlayer(@PathVariable(required = false) String name){
         try{
