@@ -41,7 +41,7 @@ public class PlayerController {
     }
 
     @DeleteMapping("/players/{id}/games")
-    public ResponseEntity<PlayerDto> deleteAllGamesByPlayerId(@PathVariable String id){
+    public ResponseEntity<HttpStatus> deleteAllGamesByPlayerId(@PathVariable String id){
         try{
             playerService.deleteAllGamesByPlayerId(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

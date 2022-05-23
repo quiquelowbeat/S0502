@@ -5,6 +5,7 @@ import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.ser
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,6 +57,7 @@ class GameControllerTest {
         gameDto.setResult("WIN");
     }
 
+    @DisplayName("JUnit test for newGame_withToken() method")
     @Test
     void newGame_withToken() throws Exception {
         // when - mockeamos el gameService.newGame
@@ -74,6 +76,7 @@ class GameControllerTest {
         logger.info(response);
     }
 
+    @DisplayName("JUnit test for newGame_withToken_nullObject method")
     @Test
     void newGame_withToken_nullObject() throws Exception {
         when(gameService.newGame("1L")).thenThrow(NullPointerException.class);
@@ -82,12 +85,14 @@ class GameControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @DisplayName("JUnit test for newGame_withNoToken method")
     @Test
     void newGame_withNoToken() throws Exception {
         mockMvc.perform(post("/private/players/{id}/games", "1L"))
                 .andExpect(status().isForbidden());
     }
 
+    @DisplayName("JUnit test for getGamesByPlayerId_withToken method")
     @Test
     void getGamesByPlayerId_withToken() throws Exception {
         // Creamos un objeto gameDto nuevo para añadirlo a la lista gameDtoList y usarlo en el mock.
@@ -107,6 +112,7 @@ class GameControllerTest {
         logger.info(response);
     }
 
+    @DisplayName("JUnit test for getGamesByPlayerId_withToken_NullObject method")
     @Test
     void getGamesByPlayerId_withToken_NullObject() throws Exception {
         when(gameService.getGamesByPlayerId("1L")).thenThrow(NullPointerException.class);
@@ -115,6 +121,7 @@ class GameControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @DisplayName("JUnit test for getGamesByPlayerId_withNoToken method")
     @Test
     void getGamesByPlayerId_withNoToken() throws Exception {
         mockMvc.perform(get("/private/players/{id}/games", "1L"))
