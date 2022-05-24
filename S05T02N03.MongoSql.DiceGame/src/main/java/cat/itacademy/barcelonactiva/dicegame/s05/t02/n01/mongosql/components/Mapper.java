@@ -25,6 +25,7 @@ public class Mapper {
         playerDto.setName(player.getName());
         playerDto.setDate(player.getDate());
         playerDto.setWinningPercentage(player.getWinningPercentage());
+        playerDto.setGames(player.getGames());
         return playerDto;
     }
 

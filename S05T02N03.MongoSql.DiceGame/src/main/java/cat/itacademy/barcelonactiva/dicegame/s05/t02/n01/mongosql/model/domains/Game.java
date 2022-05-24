@@ -4,12 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+
 @Getter
 @Setter
 @ToString
-
+@Entity
+@Table(name = "games")
+//@EnableJpaRepositories(basePackageClasses=Game.class)
 public class Game {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
     private int dice1;
     private int dice2;
     private String result;

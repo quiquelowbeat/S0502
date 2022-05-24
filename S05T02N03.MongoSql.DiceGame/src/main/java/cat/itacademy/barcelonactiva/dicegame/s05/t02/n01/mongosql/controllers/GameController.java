@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/private", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class GameController {
 
@@ -28,7 +27,7 @@ public class GameController {
     }
 
     @GetMapping("/players/{id}/games")
-    public ResponseEntity<List<GameDto>> getGamesByPlayerId(@PathVariable String id){
+    public ResponseEntity<List<String>> getGamesByPlayerId(@PathVariable String id){
         try{
             return new ResponseEntity<>(gameService.getGamesByPlayerId(id), HttpStatus.OK);
         } catch (Exception e){

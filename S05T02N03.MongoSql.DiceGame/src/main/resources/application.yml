@@ -1,8 +1,0 @@
-auth0:
-  audience: http://localhost:9001/private
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-wi2uwid8.us.auth0.com/

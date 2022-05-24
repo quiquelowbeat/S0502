@@ -12,6 +12,7 @@ import java.util.*;
 @Setter
 @ToString
 @Document(collection = "players")
+//@EnableMongoRepositories(basePackageClasses=Player.class)
 public class Player {
 
     @Id
@@ -20,7 +21,7 @@ public class Player {
     private Date date;
     private int totalWins;
     private Double winningPercentage;
-    private List<Game> games;
+    private List<String> games;
 
     public Player(String name){
         this.name = name;

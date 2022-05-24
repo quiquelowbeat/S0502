@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PlayerDto implements Serializable {
@@ -13,6 +14,7 @@ public class PlayerDto implements Serializable {
     private String name;
     private Date date;
     private Double winningPercentage;
+    private List<String> games;
 
 }
 
