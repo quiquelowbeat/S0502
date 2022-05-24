@@ -1,7 +1,7 @@
-package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.controllers;
+package cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosql.controllers;
 
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.dto.PlayerDto;
-import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosecurity.model.services.PlayerService;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosql.model.dto.PlayerDto;
+import cat.itacademy.barcelonactiva.dicegame.s05.t02.n01.mongosql.model.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

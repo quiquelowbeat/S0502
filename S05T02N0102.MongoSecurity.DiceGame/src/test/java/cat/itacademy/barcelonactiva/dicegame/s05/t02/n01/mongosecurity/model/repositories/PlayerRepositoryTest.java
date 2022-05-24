@@ -19,17 +19,6 @@ class PlayerRepositoryTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @BeforeEach
-    public void setUp(){
-        mongoTemplate.save(Player.getInstance("Foo1"));
-        mongoTemplate.save(Player.getInstance("Foo2"));
-    }
-
-    @AfterEach
-    void cleanUpDatabase() {
-        mongoTemplate.getDb().drop();
-    }
-
     @Test
     public void notEmpty(){
         assertThat(mongoTemplate.findAll(Player.class)).isNotEmpty();
