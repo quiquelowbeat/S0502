@@ -30,7 +30,7 @@ public class GameServiceImpl implements GameService{
         Player player = findPlayer(playerId);
         Game game;
         game = Game.getInstance(player);
-        if(game.getResult().equals("WIN")){
+        if(game.getResult().equals("WIN")){ // Probar con booleanos
             player.setTotalWins(player.getTotalWins() + 1);
         }
         /*
@@ -44,7 +44,7 @@ public class GameServiceImpl implements GameService{
     @Override
     public List<GameDto> getGamesByPlayerId(Long playerId){
         Player player = findPlayer(playerId);
-        List<GameDto> gameDtoList = gameRepository.findByPlayer(player).stream()
+        List<GameDto> gameDtoList = player.getGames().stream()
                 .map(game -> mapper.toGameDto(game))
                 .collect(Collectors.toList());
         if(gameDtoList.isEmpty()){
@@ -58,7 +58,9 @@ public class GameServiceImpl implements GameService{
     public void deleteAllGamesByPlayerId(Long playerId){
         Player player = findPlayer(playerId);
         // Hacemos una lista con los juegos del jugador en concreto y procedemos a borrarlos.
-        List<Game> gameList = gameRepository.findByPlayer(player);
+        List<Game> gameList = player.getGames()
+                .stream()
+                .toList();
         for(Game game : gameList){
             gameRepository.delete(game);
         }
